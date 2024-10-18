@@ -1,12 +1,12 @@
 import React from "react";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 
-function DashboardPage() {
+function AccountDetailPage() {
   return (
-    <ContentLayout title="Dashboard">
-      <div>Dashboard</div>
+    <ContentLayout title="Account Detail">
+      <div>Account Detail</div>
     </ContentLayout>
   );
 }
 
-export default DashboardPage;
+export default AccountDetailPage;

@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-
+import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { GeistSans } from "geist/font/sans";
 
 export default function RootLayout({
@@ -8,8 +8,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <h1>ADMIN LAYOUT</h1>
-        {children}
+        <AdminPanelLayout>{children}</AdminPanelLayout>
       </body>
     </html>
   );
