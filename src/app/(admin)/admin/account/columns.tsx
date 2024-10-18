@@ -1,10 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
 
 type UserItem = {
   Id: string;
   FirstName: string;
   LastName: string;
+  UserName: string;
+  Email: string;
+  Password: string;
+  PhoneNumber: string;
   ProfilePicture: string;
   FullName: string;
   DateCreated: string;
@@ -19,8 +22,22 @@ export const columns: (ColumnDef<UserItem> & {
   accessorKey?: string;
 })[] = [
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: "Id",
+    header: "Id",
+    cell: ({ row }) => {
+      const user = row.original;
+      return (
+        <div className="flex items-center gap-2">
+          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+            {user.Id}
+          </h3>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "FullName",
+    header: "Fullname",
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -33,26 +50,68 @@ export const columns: (ColumnDef<UserItem> & {
     },
   },
   {
-    accessorKey: "ProfilePicture",
-    header: "Ảnh đại diện",
+    accessorKey: "UserName",
+    header: "Username",
     cell: ({ row }) => {
       const user = row.original;
       return (
-        <div className="h-[48px] w-[48px]">
-          <Image
-            src={`https://via.placeholder.com/48x48?text=${user.FirstName.charAt(0)}`}
-            alt={user.FullName}
-            width={48}
-            height={48}
-            className="object-cover rounded-full"
-          />
+        <div className="flex items-center gap-2">
+          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+            {user.UserName}
+          </h3>
         </div>
       );
     },
   },
   {
+    accessorKey: "Email",
+    header: "Email",
+    cell: ({ row }) => {
+      const user = row.original;
+      return (
+        <div className="flex items-center gap-2">
+          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+            {user.Email}
+          </h3>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "PhoneNumber",
+    header: "Phone Number",
+    cell: ({ row }) => {  
+      const user = row.original;
+      return (
+        <div className="flex items-center gap-2">
+          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+            {user.PhoneNumber}
+          </h3>
+        </div>
+      );
+    },
+  },
+  // {
+  //   accessorKey: "ProfilePicture",
+  //   header: "Profile Picture",
+  //   cell: ({ row }) => {
+  //     const user = row.original;
+  //     return (
+  //       <div className="h-[48px] w-[48px]">
+  //         <Image
+  //           src={`https://via.placeholder.com/48x48?text=${user.FirstName.charAt(0)}`}
+  //           alt={user.FullName}
+  //           width={48}
+  //           height={48}
+  //           className="object-cover rounded-full"
+  //         />
+  //       </div>
+  //     );
+  //   },
+  // },
+  {
     accessorKey: "DateCreated",
-    header: "Ngày tạo",
+    header: "Date Created",
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -66,7 +125,7 @@ export const columns: (ColumnDef<UserItem> & {
   },
   {
     accessorKey: "DateModified",
-    header: "Ngày sửa đổi",
+    header: "Date Modified",
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -80,7 +139,7 @@ export const columns: (ColumnDef<UserItem> & {
   },
   {
     accessorKey: "CreatedBy",
-    header: "Người tạo",
+    header: "Created By",
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -94,13 +153,13 @@ export const columns: (ColumnDef<UserItem> & {
   },
   {
     accessorKey: "DeletedAt",
-    header: "Trạng thái",
+    header: "Deleted At",
     cell: ({ row }) => {
       const user = row.original;
       return (
         <div className="flex items-center gap-2">
           <p className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.DeletedAt ? "Đã xóa" : "Hoạt động"}
+            {user.DeletedAt}
           </p>
         </div>
       );
