@@ -2,8 +2,10 @@ import { ColumnDef } from "@tanstack/react-table"
 import { SubscriptionPlan } from "@/models/subscriptionPlan"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, Plus } from "lucide-react"
 import moment from 'moment'
+import { useToast } from "@/hooks/use-toast"
+import { deleteSubscriptionPlan } from "@/api/subscriptionPlan"
 
 export const columns: ColumnDef<SubscriptionPlan>[] = [
   {
@@ -61,8 +63,25 @@ export const columns: ColumnDef<SubscriptionPlan>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const plan = row.original
+      const { toast } = useToast()
+      const handleDelete = async () => {
+        try {
+            console.log(plan.id)
+          await deleteSubscriptionPlan(plan.id)
+          toast({
+            title: "Subscription plan deleted",
+            description: `Plan "${plan.name}" has been deleted successfully.`,
+          })
+        } catch (error) {
+          toast({
+            title: "Error",
+            description: "Failed to delete the subscription plan.",
+            variant: "destructive",
+          })
+        }
+      }
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -77,7 +96,9 @@ export const columns: ColumnDef<SubscriptionPlan>[] = [
               Copy plan ID
             </DropdownMenuItem>
             <DropdownMenuItem>Edit plan</DropdownMenuItem>
-            <DropdownMenuItem>Delete plan</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete}>
+              Delete plan
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

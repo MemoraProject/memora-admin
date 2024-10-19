@@ -35,11 +35,13 @@ interface DataTableProps<TData, TValue> {
     accessorKey?: string;
   })[];
   data: TData[];
+  onDelete?: (id: number) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onDelete
 }: DataTableProps<TData, TValue>) {
   const initState: Record<string, boolean> = {};
   columns.map((column) => {
@@ -75,6 +77,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    meta: { onDelete },
   });
 
   return (

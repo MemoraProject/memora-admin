@@ -7,34 +7,17 @@ import { columns } from "./columns"
 import { DataTable } from "../account/data-table"
 import { deleteSubscriptionPlan, getAllSubscriptionPlans } from "@/api/subscriptionPlan"
 import { toast } from "@/hooks/use-toast"
-
-// Sample data (replace this with actual data fetching logic)
-const sampleData: SubscriptionPlan[] = [
-  {
-    "id": 3,
-    "name": "Memora Premium 1 year",
-    "price":1,
-    "duration": 12,
-    "durationUnit": "month",
-    "benefit": "Test",
-    "dateCreated": "2024-10-09T14:30:00",
-    "dateModified": "2024-10-09T14:30:00",
-    "deletedAt": null,
-    "createdBy": null,
-    "modifiedBy": null
-  }
-]
+import { CreateSubscriptionModal } from "./create-subscription-modal"
 
 function SubscriptionPlansPage() {
-  const [plans, setPlans] = useState<SubscriptionPlan[]>(sampleData)
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   const fetchPlans = async () => {
     setIsLoading(true)
     try {
       const data = await getAllSubscriptionPlans()
-      console.log(data)
-      setPlans(prev => [...data])
+      setPlans(data)
     } catch (error) {
       console.error("Failed to fetch subscription plans:", error)
       toast({
@@ -71,8 +54,8 @@ function SubscriptionPlansPage() {
 
   return (
     <div className="bg-shade-1-100% p-4 rounded-[8px] space-y-4 text-shade-2-100%">
-      <div className="flex">
-        <div className="flex-1">
+      <div className="flex justify-between items-center">
+        <div>
           <h2 className="text-2xl font-bold tracking-tight">
             Subscription Plans
           </h2>
@@ -81,11 +64,16 @@ function SubscriptionPlansPage() {
             <button onClick={fetchPlans} className="ml-2 text-blue-500 hover:underline">reset</button>
           </p>
         </div>
+        <CreateSubscriptionModal onSuccess={fetchPlans} />
       </div>
       {isLoading ? (
         <DataTableSkeleton columns={columns.length} rows={10} />
       ) : (
-        <DataTable columns={columns} data={plans} />
+        <DataTable
+          onDelete={handleDelete}
+          columns={columns} 
+          data={plans}
+        />
       )}
     </div>
   )
