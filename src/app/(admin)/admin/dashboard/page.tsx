@@ -3,6 +3,9 @@ import { ContentLayout } from "@/components/admin-panel/content-layout";
 import DashboardCard from "../components/dashboard/DashboardCard";
 import styles from './Dashboard.module.css';
 import RevenueDashboard from "../components/dashboard/RevenueDashboard";
+import UserChartContainer from "../components/dashboard/UserChartContainer";
+import SubscriptionChartContainer from "../components/dashboard/SubscriptionChartContainer";
+import UserActivityHeatmap from "../components/dashboard/UserActivityHeatmap";
 
 function DashboardPage() {
   return (
@@ -29,6 +32,15 @@ function DashboardPage() {
       </div>
       <div>
         <RevenueDashboard />
+      </div>
+      <div>
+        <UserChartContainer />
+      </div>
+      <div>
+        <SubscriptionChartContainer />
+      </div>
+      <div className={styles.heatmapWrapper}>
+        <UserActivityHeatmap />
       </div>
     </ContentLayout>
   );
