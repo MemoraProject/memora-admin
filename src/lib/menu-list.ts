@@ -7,7 +7,7 @@ import {
   LayoutGrid,
   LucideIcon,
   CreditCard,
-  Banknote
+  Banknote,
 } from "lucide-react";
 
 type Submenu = {
@@ -38,9 +38,9 @@ export function getMenuList(pathname: string): Group[] {
           href: "/admin/dashboard",
           label: "Dashboard",
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
       groupLabel: "Credit",
@@ -63,14 +63,19 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/admin/subscription",
           label: "Subscription",
-          icon: CreditCard
+          icon: CreditCard,
         },
         {
           href: "/admin/payment",
           label: "Payment",
-          icon: Banknote
+          icon: Banknote,
         },
-      ]
+        {
+          href: "/admin/subscribers",
+          label: "Subscribers",
+          icon: Users,
+        },
+      ],
     },
     {
       groupLabel: "Settings",
@@ -78,14 +83,14 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/admin/account",
           label: "Users",
-          icon: Users
+          icon: Users,
         },
         {
           href: "/account",
           label: "Account",
-          icon: Settings
-        }
-      ]
-    }
+          icon: Settings,
+        },
+      ],
+    },
   ];
 }
