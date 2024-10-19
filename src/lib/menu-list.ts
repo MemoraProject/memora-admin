@@ -43,7 +43,7 @@ export function getMenuList(pathname: string): Group[] {
       ]
     },
     {
-      groupLabel: "Contents",
+      groupLabel: "Credit",
       menus: [
         // {
         //   href: "",
@@ -76,7 +76,7 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Settings",
       menus: [
         {
-          href: "/users",
+          href: "/admin/account",
           label: "Users",
           icon: Users
         },

@@ -85,9 +85,6 @@ export function CreateSubscription({ onSuccess }: CreateSubscriptionProps) {
               <FormControl>
                 <Input placeholder="Premium Plan" {...field} />
               </FormControl>
-              <FormDescription>
-                The name of the subscription plan.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -101,9 +98,6 @@ export function CreateSubscription({ onSuccess }: CreateSubscriptionProps) {
               <FormControl>
                 <Input type="number" placeholder="99.99" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
               </FormControl>
-              <FormDescription>
-                The price of the subscription plan.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

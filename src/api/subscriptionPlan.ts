@@ -16,6 +16,7 @@ export const getAllSubscriptionPlans = async (): Promise<SubscriptionPlan[]> => 
   const response = await logApiCall(() => axios.get<SubscriptionPlan[]>(BASE_URL), 'GET', BASE_URL);
   return response.data;
 };
+
 export const createSubscriptionPlan = async (plan: SubcriptionPlanCreationPayload): Promise<SubscriptionPlan> => {
   const response = await axios.post<SubscriptionPlan>(BASE_URL, plan);
   return response.data;
