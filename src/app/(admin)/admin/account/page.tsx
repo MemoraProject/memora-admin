@@ -54,7 +54,7 @@ function AccountTablePage() {
   }
 
   const handleRowClick = (userId: number) => {
-    router.push(`/${userId}`)
+    router.push(`/admin/account/${userId}`)
   }
 
   return (
@@ -69,7 +69,6 @@ function AccountTablePage() {
             <button onClick={fetchUsers} className="ml-2 text-blue-500 hover:underline">refresh</button>
           </p>
         </div>
-        {/* <CreateUserModal onSuccess={fetchUsers} /> */}
       </div>
       {isLoading ? (
         <DataTableSkeleton columns={columns.length} rows={10} />

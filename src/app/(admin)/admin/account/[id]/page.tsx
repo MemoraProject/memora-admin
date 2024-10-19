@@ -8,14 +8,14 @@ import { User } from "@/models/user";
 import { getUserById } from "@/api/user";
 import { toast } from "@/hooks/use-toast";
 
-function AccountDetailPage({ userId } : { userId: string }) {
+function AccountDetailPage({ params }: { params: { id: string } }) {
   const [user, setUser] = useState<User>()
   const [isLoading, setIsLoading] = useState(false)
 
-  const fetchUsers = async () => {
+  const fetchUser = async () => {
     setIsLoading(true)
     try {
-      const data = await getUserById(userId)
+      const data = await getUserById(params.id)
       setUser(data)
     } catch (error) {
       console.error("Failed to fetch user:", error)
@@ -30,11 +30,15 @@ function AccountDetailPage({ userId } : { userId: string }) {
   }
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    fetchUser()
+  }, [params.id])
 
-  if (!userId) {
+  if (isLoading) {
     return <div>Loading data...</div>;
+  }
+
+  if (!user) {
+    return <div>User not found</div>;
   }
 
   return (
