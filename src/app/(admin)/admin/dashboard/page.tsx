@@ -2,6 +2,7 @@ import React from "react";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import DashboardCard from "../components/dashboard/DashboardCard";
 import styles from './Dashboard.module.css';
+import RevenueDashboard from "../components/dashboard/RevenueDashboard";
 
 function DashboardPage() {
   return (
@@ -25,6 +26,9 @@ function DashboardPage() {
           percentage={11.8}
           trendData={[8, 12, 9, 15, 11]}
         />
+      </div>
+      <div>
+        <RevenueDashboard />
       </div>
     </ContentLayout>
   );
