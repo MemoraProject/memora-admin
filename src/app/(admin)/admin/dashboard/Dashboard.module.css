@@ -1,0 +1,22 @@
+.dashboardGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; 
+  }
+  
+  .dashboardGrid > * {
+    flex: 1 1 300px; 
+    max-width: calc(33.333% - 0.667rem);
+  }
+  
+  @media (max-width: 1024px) {
+    .dashboardGrid > * {
+      max-width: calc(50% - 0.5rem); 
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .dashboardGrid > * {
+      max-width: 100%; 
+    }
+  }
