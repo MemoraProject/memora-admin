@@ -1,0 +1,57 @@
+.dashboardCard {
+    display: flex;
+    width: 500px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: white;
+  }
+  
+  .leftSection {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .rightSection {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 20px;
+  }
+  
+  .gaugeChart {
+    position: relative;
+    width: 120px;
+    height: 120px;
+  }
+  
+  .gaugeValue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .title {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .trendChart {
+    height: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .percentage {
+    text-align: right;
+    font-weight: bold;
+    color: #20B2AA;
+  }

@@ -1,0 +1,35 @@
+.dashboardGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; 
+  }
+  
+  .dashboardGrid > * {
+    flex: 1 1 300px; 
+    max-width: calc(33.333% - 0.667rem);
+  }
+  
+  @media (max-width: 1024px) {
+    .dashboardGrid > * {
+      max-width: calc(50% - 0.5rem); 
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .dashboardGrid > * {
+      max-width: 100%; 
+    }
+  }
+
+  .heatmapWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+    
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 44px;
+  }

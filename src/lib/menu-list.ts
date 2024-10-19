@@ -5,7 +5,9 @@ import {
   Bookmark,
   SquarePen,
   LayoutGrid,
-  LucideIcon
+  LucideIcon,
+  CreditCard,
+  Banknote,
 } from "lucide-react";
 
 type Submenu = {
@@ -33,57 +35,62 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "",
       menus: [
         {
-          href: "/dashboard",
+          href: "/admin/dashboard",
           label: "Dashboard",
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
-      groupLabel: "Contents",
+      groupLabel: "Credit",
       menus: [
+        // {
+        //   href: "",
+        //   label: "Posts",
+        //   icon: SquarePen,
+        //   submenus: [
+        //     {
+        //       href: "/posts",
+        //       label: "All Posts"
+        //     },
+        //     {
+        //       href: "/posts/new",
+        //       label: "New Post"
+        //     }
+        //   ]
+        // },
         {
-          href: "",
-          label: "Posts",
-          icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts"
-            },
-            {
-              href: "/posts/new",
-              label: "New Post"
-            }
-          ]
+          href: "/admin/subscription",
+          label: "Subscription",
+          icon: CreditCard,
         },
         {
-          href: "/categories",
-          label: "Categories",
-          icon: Bookmark
+          href: "/admin/payment",
+          label: "Payment",
+          icon: Banknote,
         },
         {
-          href: "/tags",
-          label: "Tags",
-          icon: Tag
-        }
-      ]
+          href: "/admin/subscribers",
+          label: "Subscribers",
+          icon: Users,
+        },
+      ],
     },
     {
       groupLabel: "Settings",
       menus: [
         {
-          href: "/users",
+          href: "/admin/account",
           label: "Users",
-          icon: Users
+          icon: Users,
         },
         {
           href: "/account",
           label: "Account",
-          icon: Settings
-        }
-      ]
-    }
+          icon: Settings,
+        },
+      ],
+    },
   ];
 }
