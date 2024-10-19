@@ -35,13 +35,13 @@ interface DataTableProps<TData, TValue> {
     accessorKey?: string;
   })[];
   data: TData[];
-  onDelete?: (id: number) => void
+  onDelete?: (id: number) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  onDelete
+  onDelete,
 }: DataTableProps<TData, TValue>) {
   const initState: Record<string, boolean> = {};
   columns.map((column) => {
@@ -53,7 +53,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>(initState);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -103,7 +103,7 @@ export function DataTable<TData, TValue>({
                           >
                             {flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                             {{
                               asc: " 🔼",
@@ -135,7 +135,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

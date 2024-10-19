@@ -13,13 +13,16 @@ import { UserSubscription } from "@/models/userSubscription";
 import { getAllUserSubscriptions } from "@/api/userSubscription";
 
 function UserSubscriptionsPage() {
-  const [userSubscriptions, setUserSubscriptions] = useState<UserSubscription[]>([]);
+  const [userSubscriptions, setUserSubscriptions] = useState<
+    UserSubscription[]
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchPlans = async () => {
     setIsLoading(true);
     try {
-      const data = await getAllUserSubscriptions();
+      const rawdata = await getAllUserSubscriptions();
+      const data = rawdata.sort((a, b) => b.id - a.id);
       setUserSubscriptions(data);
     } catch (error) {
       console.error("Failed to fetch subscription plans:", error);
@@ -74,7 +77,11 @@ function UserSubscriptionsPage() {
       {isLoading ? (
         <DataTableSkeleton columns={columns.length} rows={10} />
       ) : (
-        <DataTable onDelete={handleDelete} columns={columns} data={userSubscriptions} />
+        <DataTable
+          onDelete={handleDelete}
+          columns={columns}
+          data={userSubscriptions}
+        />
       )}
     </div>
   );
