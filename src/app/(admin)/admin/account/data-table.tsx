@@ -36,12 +36,14 @@ interface DataTableProps<TData, TValue> {
   })[];
   data: TData[];
   onDelete?: (id: number) => void
+  onRowClick?: (id: number) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  onDelete
+  onDelete,
+  onRowClick
 }: DataTableProps<TData, TValue>) {
   const initState: Record<string, boolean> = {};
   columns.map((column) => {

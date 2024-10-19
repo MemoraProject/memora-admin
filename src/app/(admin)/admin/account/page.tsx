@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import DataTableSkeleton from "@/components/dataTableSkelenton"
@@ -11,6 +12,7 @@ import { toast } from "@/hooks/use-toast"
 function AccountTablePage() {
   const [users, setUsers] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const fetchUsers = async () => {
     setIsLoading(true)
@@ -51,6 +53,10 @@ function AccountTablePage() {
     }
   }
 
+  const handleRowClick = (userId: number) => {
+    router.push(`/${userId}`)
+  }
+
   return (
     <div className="bg-shade-1-100% p-4 rounded-[8px] space-y-4 text-shade-2-100%">
       <div className="flex justify-between items-center">
@@ -70,6 +76,7 @@ function AccountTablePage() {
       ) : (
         <DataTable
           onDelete={handleDelete}
+          onRowClick={handleRowClick}
           columns={columns} 
           data={users}
         />
