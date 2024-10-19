@@ -1,168 +1,91 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { User } from "@/models/user";
+import moment from "moment";
 
-type UserItem = {
-  Id: string;
-  FirstName: string;
-  LastName: string;
-  UserName: string;
-  Email: string;
-  Password: string;
-  PhoneNumber: string;
-  ProfilePicture: string;
-  FullName: string;
-  DateCreated: string;
-  DateModified: string;
-  DeletedAt: string | null;
-  CreatedBy: string;
-  ModifiedBy: string;
-};
-
-export const columns: (ColumnDef<UserItem> & {
+export const columns: (ColumnDef<User> & {
   show?: boolean;
   accessorKey?: string;
 })[] = [
   {
-    accessorKey: "Id",
+    accessorKey: "id",
     header: "Id",
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.Id}
-          </h3>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+          {row.original.id}
+        </h3>
+      </div>
+    ),
   },
   {
-    accessorKey: "FullName",
-    header: "Fullname",
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.FullName}
-          </h3>
-        </div>
-      );
-    },
+    accessorKey: "fullName",
+    header: "Full Name",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+          {row.original.fullName || "-"}
+        </h3>
+      </div>
+    ),
   },
   {
-    accessorKey: "UserName",
+    accessorKey: "userName",
     header: "Username",
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.UserName}
-          </h3>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+          {row.original.userName || "-"}
+        </h3>
+      </div>
+    ),
   },
   {
-    accessorKey: "Email",
+    accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.Email}
-          </h3>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+          {row.original.email}
+        </h3>
+      </div>
+    ),
   },
   {
-    accessorKey: "PhoneNumber",
+    accessorKey: "phoneNumber",
     header: "Phone Number",
-    cell: ({ row }) => {  
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.PhoneNumber}
-          </h3>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <h3 className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
+          {row.original.phoneNumber}
+        </h3>
+      </div>
+    ),
   },
-  // {
-  //   accessorKey: "ProfilePicture",
-  //   header: "Profile Picture",
-  //   cell: ({ row }) => {
-  //     const user = row.original;
-  //     return (
-  //       <div className="h-[48px] w-[48px]">
-  //         <Image
-  //           src={`https://via.placeholder.com/48x48?text=${user.FirstName.charAt(0)}`}
-  //           alt={user.FullName}
-  //           width={48}
-  //           height={48}
-  //           className="object-cover rounded-full"
-  //         />
-  //       </div>
-  //     );
-  //   },
-  // },
+  
   {
-    accessorKey: "DateCreated",
+    accessorKey: "createdAt",
     header: "Date Created",
     cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {new Date(user.DateCreated).toLocaleDateString('vi-VN')}
-          </p>
-        </div>
-      );
+      const date = row.getValue("createdAt") as string
+      const formatted = moment(date).format('MMMM Do YYYY')
+      return <div>{formatted}</div>
     },
   },
   {
-    accessorKey: "DateModified",
+    accessorKey: "updatedAt",
     header: "Date Modified",
     cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {new Date(user.DateModified).toLocaleDateString('vi-VN')}
-          </p>
-        </div>
-      );
+      const date = row.getValue("updatedAt") as string
+      const formatted = moment(date).format('MMMM Do YYYY')
+      return <div>{formatted}</div>
     },
   },
   {
-    accessorKey: "CreatedBy",
-    header: "Created By",
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.CreatedBy}
-          </p>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "DeletedAt",
+    accessorKey: "deletedAt",
     header: "Deleted At",
     cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-neutral-8 text-[14px] not-italic leading-[normal] whitespace-nowrap">
-            {user.DeletedAt}
-          </p>
-        </div>
-      );
+      const date = row.getValue("deletedAt") as string | null
+      return <div>{date ? moment(date).format('MMMM Do YYYY') : '-'}</div>
     },
   },
 ];
