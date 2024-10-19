@@ -1,0 +1,89 @@
+.revenueDashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f3f4f6;
+  }
+  
+  .gaugeChart, .barChart {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+  }
+  
+  .gaugeChart {
+    width: 30%;
+  }
+  
+  .barChart {
+    width: 65%;
+    height: 400px;
+  }
+  
+  .gaugeValue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .controls {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .exportBtn, .dateRange {
+    padding: 10px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .exportBtn:hover, .dateRange:hover {
+    background-color: #f9fafb;
+  }
+
+  .legend {
+    margin-top: 20px;
+  }
+  
+  .legendItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .legendColor {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  
+  .legendLabel {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .legendLine {
+    position: absolute;
+    left: 4px; /* Half of the legendColor width to center it */
+    top: 12px; /* Adjust as needed to position below the dot */
+    width: 1px;
+    height: 20px; /* Adjust height as needed */
+    background-color: #e0e0e0;
+  }
+  
+  /* Remove the line from the last item */
+  .legendItem:last-child .legendLine {
+    display: none;
+  }
