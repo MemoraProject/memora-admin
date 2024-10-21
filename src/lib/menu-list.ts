@@ -43,23 +43,8 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
-      groupLabel: "Credit",
+      groupLabel: "Management",
       menus: [
-        // {
-        //   href: "",
-        //   label: "Posts",
-        //   icon: SquarePen,
-        //   submenus: [
-        //     {
-        //       href: "/posts",
-        //       label: "All Posts"
-        //     },
-        //     {
-        //       href: "/posts/new",
-        //       label: "New Post"
-        //     }
-        //   ]
-        // },
         {
           href: "/admin/subscription",
           label: "Subscription",
@@ -78,18 +63,18 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
-      groupLabel: "Settings",
+      groupLabel: "Accounts",
       menus: [
         {
           href: "/admin/account",
           label: "Users",
           icon: Users,
         },
-        {
-          href: "/account",
-          label: "Account",
-          icon: Settings,
-        },
+        // {
+        //   href: "/account",
+        //   label: "Account",
+        //   icon: Settings,
+        // },
       ],
     },
   ];

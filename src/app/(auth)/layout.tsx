@@ -7,10 +7,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <body>
-        <h1>AUTH LAYOUT</h1>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
