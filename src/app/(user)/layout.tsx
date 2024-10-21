@@ -8,7 +8,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <h1>USER LAYOUT</h1>
+        {/* <h1>USER LAYOUT</h1> */}
         {children}
       </body>
     </html>
