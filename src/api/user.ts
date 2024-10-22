@@ -13,7 +13,7 @@ export const createUser = async (user: UserCreationPayload): Promise<User> => {
   return response.data;
 };
 
-export const getUserById = async (id: number): Promise<User> => {
+export const getUserById = async (id: string): Promise<User> => {
   const response = await axios.get<User>(`${BASE_URL}/${id}`);
   return response.data;
 };
