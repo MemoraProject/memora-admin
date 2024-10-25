@@ -169,7 +169,7 @@ const RevenueDashboard: React.FC = () => {
 
   return (
     <div className="bg-gray-50 mb-4">
-      <div className="mt-4 grid grid-cols-3 gap-6">
+      <div className="mt-4 grid grid-cols-3 gap-4">
         <div className="col-span-1 rounded-lg bg-white shadow">
           <div className="p-6">
             <h2 className="mb-4 text-xl font-semibold">Today's Revenue</h2>
