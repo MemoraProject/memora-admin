@@ -28,7 +28,4 @@ export const deleteUser = async (id: number): Promise<void> => {
   await axios.delete(`${BASE_URL}/${id}`);
 };
 
-export const monthlyUserGrowthStatistics = async (months: number) => {
-  const response = await api.get(`user/monthly-growth-statistics?months=${months}`);
-  return response.data;
-};
+ 

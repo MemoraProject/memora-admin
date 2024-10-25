@@ -1,7 +1,7 @@
-'use client';
-import React, { useState } from 'react';
-import UserChart from './UserChart';
-import styles from './UserChartContainer.module.css';
+"use client";
+import React, { useState } from "react";
+import UserChart from "./UserChart";
+import styles from "./UserChartContainer.module.css";
 
 const UserChartContainer: React.FC = () => {
   const [timeRange, setTimeRange] = useState<number>(10);
@@ -13,9 +13,11 @@ const UserChartContainer: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>NEW AND EXISTING USERS</h2>
-        <select 
-          value={timeRange} 
+        <h2 className="text-xl font-semibold text-gray-800">
+          NEW AND EXISTING USERS
+        </h2>
+        <select
+          value={timeRange}
           onChange={handleTimeRangeChange}
           className={styles.select}
         >
