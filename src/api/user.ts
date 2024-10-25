@@ -1,5 +1,6 @@
 import { User, UserCreationPayload, UserUpdatePayload } from '@/models/user';
 import axios from 'axios';
+import api from './axios';
 
 const BASE_URL = 'https://api.memora.vn/api/User';
 
@@ -25,4 +26,9 @@ export const updateUser = async (id: number, user: UserUpdatePayload): Promise<U
 
 export const deleteUser = async (id: number): Promise<void> => {
   await axios.delete(`${BASE_URL}/${id}`);
+};
+
+export const monthlyUserGrowthStatistics = async (months: number) => {
+  const response = await api.get(`user/monthly-growth-statistics?months=${months}`);
+  return response.data;
 };

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { monthlyUserGrowthStatistics } from '@/api/user';
 
 ChartJS.register(
   CategoryScale,
@@ -20,50 +21,73 @@ ChartJS.register(
   Legend
 );
 
-const UserChart: React.FC = () => {
+interface UserStatistics {
+  date: string;
+  newUsers: number;
+  totalUsers: number;
+}
+
+interface UserChartProps {
+  months: number;
+}
+
+const UserChart: React.FC<UserChartProps> = ({ months }) => {
+  const [statistics, setStatistics] = useState<UserStatistics[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await monthlyUserGrowthStatistics(months);
+     
+       
+        const data: UserStatistics[] = response
+ 
+        setStatistics(data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [months]);
+
   const options = {
-    plugins: {
-      title: {
-        display: true,
-        text: 'NEW AND EXISTING USERS',
-      },
-      legend: {
-        position: 'bottom' as const,
-      },
-    },
-    responsive: true,
-    scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true,
-        beginAtZero: true,
-      },
-    },
+    // ... (giữ nguyên các tùy chọn hiện có)
   };
 
-  const labels = ['Jun', 'Jul', 'Aug', 'Oct', 'Nov', 'Dec'];
-
+  const labels = statistics.map(stat => new Date(stat.date).toLocaleString('default', { month: 'short' }));
+  
   const data = {
     labels,
     datasets: [
       {
         label: 'Total Users',
-        data: [700, 850, 1050, 1350, 1500, 1750],
+        data: statistics.map(stat => stat.totalUsers),
         backgroundColor: 'rgb(75, 192, 192)',
       },
       {
         label: 'New Users',
-        data: [150, 200, 300, 250, 300, 250],
+        data: statistics.map(stat => stat.newUsers),
         backgroundColor: 'rgb(173, 216, 230)',
       },
     ],
   };
 
+  if (isLoading) {
+    return <p>Đang tải dữ liệu...</p>;
+  }
+
   return (
     <div style={{ height: '400px', width: '100%' }}>
-      <Bar options={options} data={data} />
+      {statistics.length > 0 ? (
+        <Bar options={options} data={data} />
+      ) : (
+        <p>Không có dữ liệu để hiển thị.</p>
+      )}
     </div>
   );
 };
