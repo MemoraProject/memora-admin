@@ -4,7 +4,11 @@ import UserChart from './UserChart';
 import styles from './UserChartContainer.module.css';
 
 const UserChartContainer: React.FC = () => {
-  const [timeRange, setTimeRange] = useState('Last 6 months');
+  const [timeRange, setTimeRange] = useState<number>(10);
+
+  const handleTimeRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTimeRange(Number(e.target.value));
+  };
 
   return (
     <div className={styles.container}>
@@ -12,15 +16,15 @@ const UserChartContainer: React.FC = () => {
         <h2>NEW AND EXISTING USERS</h2>
         <select 
           value={timeRange} 
-          onChange={(e) => setTimeRange(e.target.value)}
+          onChange={handleTimeRangeChange}
           className={styles.select}
         >
-          <option value="Last 6 months">Last 6 months</option>
-          <option value="Last 12 months">Last 12 months</option>
-          <option value="This year">This year</option>
+          <option value={6}>Last 6 months</option>
+          <option value={9}>Last 9 months</option>
+          <option value={12}>Last 12 months</option>
         </select>
       </div>
-      <UserChart />
+      <UserChart months={timeRange} />
     </div>
   );
 };
