@@ -10,7 +10,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { monthlyUserGrowthStatistics } from '@/api/user';
+import { monthlyUserGrowthStatistics } from '@/api/dashboardApi';
+ 
 
 ChartJS.register(
   CategoryScale,
