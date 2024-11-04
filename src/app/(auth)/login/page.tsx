@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { GithubIcon, ChromeIcon } from "lucide-react";
+import { login } from "@/api/user";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -14,12 +15,13 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === "admin" && password === "admin") {
-      localStorage.setItem("adminToken", "THIS_IS_ADMIN_TOKEN");
+
+    try {
+      await login(username, password);
       router.push("/admin/dashboard");
-    } else {
+    } catch (error) {
       setError("Invalid credentials");
     }
   };
