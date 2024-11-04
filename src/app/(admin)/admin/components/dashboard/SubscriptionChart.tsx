@@ -20,7 +20,17 @@ ChartJS.register(
   Legend
 );
 
-const SubscriptionChart: React.FC = () => {
+interface SubscriptionData {
+  date: string;
+  oneMonthUsers: number;
+  threeMonthsUsers: number;
+  twelveMonthsUsers: number;
+}
+
+interface SubscriptionChartProps {
+  data: SubscriptionData[];
+}
+const SubscriptionChart: React.FC<SubscriptionChartProps> = ({ data }) => {
   const options = {
     plugins: {
       title: {
@@ -48,24 +58,27 @@ const SubscriptionChart: React.FC = () => {
     },
   };
 
-  const labels = ['Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+  const labels = data.map(item => {
+    const date = new Date(item.date);
+    return date.toLocaleString("default", { month: "short" });
+  });
 
-  const data = {
+  const chartData = {
     labels,
     datasets: [
       {
         label: '1 Month',
-        data: [30, 37, 39, 43, 44, 45],
+        data: data.map(item => item.oneMonthUsers),
         backgroundColor: 'rgb(173, 216, 230)',
       },
       {
         label: '3 Months',
-        data: [15, 17, 18, 19, 19, 20],
+        data: data.map(item => item.threeMonthsUsers),
         backgroundColor: 'rgb(255, 206, 86)',
       },
       {
         label: '12 Months',
-        data: [12, 12, 13, 13, 13, 13],
+        data: data.map(item => item.twelveMonthsUsers),
         backgroundColor: 'rgb(75, 192, 192)',
       },
     ],
@@ -73,7 +86,7 @@ const SubscriptionChart: React.FC = () => {
 
   return (
     <div style={{ height: '400px', width: '100%' }}>
-      <Bar options={options} data={data} />
+      <Bar options={options} data={chartData} />
     </div>
   );
 };

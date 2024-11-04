@@ -55,19 +55,23 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, percentage,
   };
 
   return (
-    <div className={styles.dashboardCard}>
-      <div className={styles.leftSection}>
-        <div className={styles.gaugeChart}>
+    <div className="bg-white rounded-lg shadow p-4 flex">
+      <div className="w-1/2 pr-4">
+        <div className="relative h-32 w-32 mx-auto">
           <Doughnut data={gaugeChartData} options={gaugeChartOptions} />
-          <div className={styles.gaugeValue}>{value}</div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
+            {value}
+          </div>
         </div>
       </div>
-      <div className={styles.rightSection}>
-        <h3 className={styles.title}>{title}</h3>
-        <div className={styles.trendChart}>
+      <div className="w-1/2 flex flex-col justify-between">
+        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+        <div className="h-16 mb-2">
           <Line data={trendChartData} options={trendChartOptions} />
         </div>
-        <div className={styles.percentage}>{percentage}% ▲</div>
+        <div className="text-right text-green-500 font-semibold">
+          {percentage}% ▲
+        </div>
       </div>
     </div>
   );

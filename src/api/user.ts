@@ -30,6 +30,7 @@ export const deleteUser = async (id: number): Promise<void> => {
   await api.delete(`${BASE_URL}/${id}`);
 };
 
+
 export const monthlyUserGrowthStatistics = async (months: number) => {
   const response = await api.get(
     `user/monthly-growth-statistics?months=${months}`,
@@ -49,3 +50,4 @@ export const login = async (email: string, password: string): Promise<User> => {
   }
   return response.data;
 };
+
