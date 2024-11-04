@@ -1,7 +1,9 @@
 import api from "./axios";
 
 export const monthlyUserGrowthStatistics = async (months: number) => {
-  const response = await api.get(`user/monthly-growth-statistics?months=${months}`);
+  const response = await api.get(
+    `user/monthly-growth-statistics?months=${months}`,
+  );
   return response.data;
 };
 
@@ -20,3 +22,9 @@ export const getRevenueByType = async () => {
   return response.data;
 };
 
+export const getSubscriptionDashboard = async (timerange: string) => {
+  const response = await api.get(
+    `dashboard/subscription-dashboard?months=${timerange}`,
+  );
+  return response.data;
+};
