@@ -12,7 +12,7 @@ const api = axios.create({
 api.interceptors.request.use(
   async (config) => {
     // Get the token from AsyncStorage
-    const token = localStorage.getItem("userToken");
+    const token = localStorage.getItem("adminToken");
 
     // If token exists, add it to the headers
     if (token) {
