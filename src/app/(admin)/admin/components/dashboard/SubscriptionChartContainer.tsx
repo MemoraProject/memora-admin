@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import SubscriptionChart from "./SubscriptionChart";
 import styles from "./SubscriptionChartContainer.module.css";
+import { getSubscriptionDashboard } from "@/api/dashboardApi";
 
 interface SubscriptionData {
   date: string;
@@ -19,11 +20,13 @@ const SubscriptionChartContainer: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://api.memora.vn/api/Dashboard/subscription-dashboard?months=${timeRange}`,
-        );
-        const data = await response.json();
-        setSubscriptionData(data);
+        // const response = await fetch(
+        //   `https://api.memora.vn/api/Dashboard/subscription-dashboard?months=${timeRange}`,
+        // );
+        // const data = await response.json();
+
+        const subscriptionData = await getSubscriptionDashboard(timeRange);
+        setSubscriptionData(subscriptionData);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
       }
