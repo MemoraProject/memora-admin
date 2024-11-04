@@ -13,7 +13,7 @@ export default function RootLayout({
 
   useEffect(() => {
     const adminToken = localStorage.getItem("adminToken");
-    if (adminToken !== "THIS_IS_ADMIN_TOKEN") {
+    if (!adminToken || adminToken.trim() === "") {
       localStorage.removeItem("adminToken");
       router.push("/login");
     }
