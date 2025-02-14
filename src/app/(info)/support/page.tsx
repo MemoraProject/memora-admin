@@ -77,7 +77,7 @@ function SupportPage() {
                 </p>
                 <div className="space-y-2 text-left text-sm">
                   <p>Email: memora.edu@gmail.com</p>
-                  <p>Phone: +84 909 274 868</p>
+                  <p>Phone: +84 909 274 867</p>
                   <p>
                     Address: 100/65/20D, xã Đông Thạnh, huyện Hóc Môn, Tp. HCM,
                     Việt Nam
