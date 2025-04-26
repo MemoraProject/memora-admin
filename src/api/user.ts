@@ -18,6 +18,11 @@ export const getUserById = async (id: string): Promise<User> => {
   return response.data;
 };
 
+export const getUserWithFullDetails = async (id: string): Promise<User> => {
+  const response = await api.get<User>(`${BASE_URL}/${id}/full-details`);
+  return response.data;
+};
+
 export const updateUser = async (
   id: number,
   user: UserUpdatePayload,
@@ -29,7 +34,6 @@ export const updateUser = async (
 export const deleteUser = async (id: number): Promise<void> => {
   await api.delete(`${BASE_URL}/${id}`);
 };
-
 
 export const monthlyUserGrowthStatistics = async (months: number) => {
   const response = await api.get(
@@ -50,4 +54,3 @@ export const login = async (email: string, password: string): Promise<User> => {
   }
   return response.data;
 };
-
