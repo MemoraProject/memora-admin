@@ -43,8 +43,10 @@ export const columns: (ColumnDef<UserWithActivityStatus> & {
 
       return (
         <div className="flex items-center gap-2">
-          <div className={`h-3 w-3 rounded-full ${map[status].color}`}></div>
-          <span className="capitalize">{map[status].text}</span>
+          <div
+            className={`h-3 w-3 rounded-full ${map[status]?.color ?? ""}`}
+          ></div>
+          <span className="capitalize">{map[status]?.text ?? ""}</span>
         </div>
       );
     },

@@ -21,7 +21,8 @@ function AccountTablePage() {
     setIsLoading(true);
     try {
       const result = await getUsersWithActivityStatus({});
-      console.log(result);
+      result.reverse();
+      // console.log(result);
       setUsers(result);
     } catch (error) {
       console.error("Failed to fetch users:", error);
