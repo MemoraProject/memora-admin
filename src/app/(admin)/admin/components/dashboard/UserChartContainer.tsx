@@ -17,6 +17,7 @@ const UserChartContainer: React.FC = () => {
           NEW AND EXISTING USERS
         </h2>
         <select
+          title="Select a date range"
           value={timeRange}
           onChange={handleTimeRangeChange}
           className={styles.select}

@@ -168,7 +168,7 @@ const RevenueDashboard: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 mb-4">
+    <div className="mb-4 bg-gray-50">
       <div className="mt-4 grid grid-cols-3 gap-4">
         <div className="col-span-1 rounded-lg bg-white shadow">
           <div className="p-6">
@@ -205,7 +205,10 @@ const RevenueDashboard: React.FC = () => {
               <h2 className="text-xl font-semibold">
                 Revenue by customer type
               </h2>
-              <select className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm">
+              <select
+                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm"
+                title="Select a date range"
+              >
                 <option>Jan 2024 - Dec 2024</option>
               </select>
             </div>

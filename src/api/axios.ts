@@ -2,7 +2,7 @@ import axios from "axios";
 // import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5147/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://api.memora.vn/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -26,4 +26,13 @@ api.interceptors.request.use(
   },
 );
 
+const apiRevenueCat = axios.create({
+  baseURL: "https://api.revenuecat.com/v2",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer sk_PoETLiKhDSMHQoBmNNTcFUaFsEKMp`,
+  },
+});
+
+export { apiRevenueCat };
 export default api;

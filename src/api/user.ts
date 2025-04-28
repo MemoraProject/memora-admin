@@ -1,4 +1,11 @@
-import { User, UserCreationPayload, UserUpdatePayload } from "@/models/user";
+import {
+  User,
+  UserCreationPayload,
+  UserUpdatePayload,
+  PagedResult,
+  UserParams,
+  UserWithActivityStatus,
+} from "@/models/user";
 import api from "./axios";
 
 const BASE_URL = "/User";
@@ -52,5 +59,28 @@ export const login = async (email: string, password: string): Promise<User> => {
   } else {
     throw new Error("Invalid credentials");
   }
+  return response.data;
+};
+
+export const getUsersWithActivityStatus = async (
+  params: UserParams,
+): Promise<UserWithActivityStatus[]> => {
+  const queryParams = new URLSearchParams();
+
+  if (params.pageNumber)
+    queryParams.append("pageNumber", params.pageNumber.toString());
+  if (params.pageSize)
+    queryParams.append("pageSize", params.pageSize.toString());
+  if (params.searchTerm) queryParams.append("searchTerm", params.searchTerm);
+  if (params.activityStatus)
+    queryParams.append("activityStatus", params.activityStatus);
+  if (params.hasSubscription !== undefined)
+    queryParams.append("hasSubscription", params.hasSubscription.toString());
+  if (params.fromDate) queryParams.append("fromDate", params.fromDate);
+  if (params.toDate) queryParams.append("toDate", params.toDate);
+
+  const response = await api.get<UserWithActivityStatus[]>(
+    `${BASE_URL}/with-activity-status?${queryParams.toString()}`,
+  );
   return response.data;
 };

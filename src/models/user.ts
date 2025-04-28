@@ -62,3 +62,26 @@ export interface SubscriptionHistoryItem {
 export type UserCreationPayload = Omit<User, "id" | keyof TimeTracking>;
 
 export type UserUpdatePayload = Partial<User>;
+
+export interface UserWithActivityStatus extends User {
+  activityStatus: string; // "green", "yellow", "orange", "gray"
+  lastSeenAt?: string;
+}
+
+export interface UserParams {
+  pageNumber?: number;
+  pageSize?: number;
+  searchTerm?: string;
+  activityStatus?: string;
+  hasSubscription?: boolean;
+  fromDate?: string;
+  toDate?: string;
+}
+
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}
