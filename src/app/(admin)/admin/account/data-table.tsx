@@ -37,13 +37,17 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   onDelete?: (id: number) => void;
   onRowClick?: (id: number) => void;
+  hasSubscriptionFilter?: boolean | undefined;
+  setHasSubscriptionFilter?: (value: boolean | undefined) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onDelete,
-  onRowClick
+  onRowClick,
+  hasSubscriptionFilter,
+  setHasSubscriptionFilter,
 }: DataTableProps<TData, TValue>) {
   const initState: Record<string, boolean> = {};
   columns.map((column) => {
@@ -84,7 +88,13 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      {setHasSubscriptionFilter && (
+        <DataTableToolbar
+          table={table}
+          hasSubscriptionFilter={hasSubscriptionFilter}
+          setHasSubscriptionFilter={setHasSubscriptionFilter}
+        />
+      )}
       <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
@@ -132,7 +142,9 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => onRowClick && onRowClick((row.original as any).id)}
+                  onClick={() =>
+                    onRowClick && onRowClick((row.original as any).id)
+                  }
                   className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (

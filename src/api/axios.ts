@@ -26,4 +26,13 @@ api.interceptors.request.use(
   },
 );
 
+const apiRevenueCat = axios.create({
+  baseURL: "https://api.revenuecat.com/v2",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer sk_PoETLiKhDSMHQoBmNNTcFUaFsEKMp`,
+  },
+});
+
+export { apiRevenueCat };
 export default api;

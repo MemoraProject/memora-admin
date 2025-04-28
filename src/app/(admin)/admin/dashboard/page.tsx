@@ -3,11 +3,10 @@ import React, { useEffect, useState } from "react";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import DashboardCard from "../components/dashboard/DashboardCard";
 import styles from "./Dashboard.module.css";
-import RevenueDashboard from "../components/dashboard/RevenueDashboard";
-import UserChartContainer from "../components/dashboard/UserChartContainer";
 import SubscriptionChartContainer from "../components/dashboard/SubscriptionChartContainer";
-import UserActivityHeatmap from "../components/dashboard/UserActivityHeatmap";
+import UserRetentionChartContainer from "../components/dashboard/UserRetentionChartContainer";
 import { getDashboardCard } from "@/api/dashboardApi";
+import { getAllUsers } from "@/api/user";
 
 interface DashboardData {
   title: string;
@@ -18,32 +17,47 @@ interface DashboardData {
 
 function DashboardPage() {
   const [dashboardData, setDashboardData] = useState<DashboardData[]>([]);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await getDashboardCard(); // Điều chỉnh URL API nếu cần
+        // Fetch dashboard cards data
+        const dashboardResponse = await getDashboardCard();
+        setDashboardData(dashboardResponse);
 
-        setDashboardData(response);
+        // Fetch total users count
+        const users = await getAllUsers();
+        setTotalUsers(users.length);
       } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchDashboardData();
+    fetchData();
   }, []);
 
   if (isLoading) {
-    return <div>Đang tải dữ liệu...</div>;
+    return <div>Loading data...</div>;
   }
 
   return (
     <ContentLayout title="Dashboard">
       <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
-        {dashboardData.map((item, index) => (
+        {/* Total Users Card */}
+        <DashboardCard
+          key="total-users"
+          title="Total Users"
+          value={totalUsers.toString()}
+          percentage={0}
+          trendData={[]}
+        />
+
+        {/* Other Dashboard Cards */}
+        {dashboardData.slice(1, 3).map((item, index) => (
           <DashboardCard
             key={index}
             title={item.title}
@@ -53,20 +67,14 @@ function DashboardPage() {
           />
         ))}
       </div>
+
       <div className="mb-4">
-        <RevenueDashboard />
+        <SubscriptionChartContainer />
       </div>
-      <div className="mb-4 flex flex-col gap-4 lg:flex-row">
-        <div className="w-full lg:w-1/2">
-          <UserChartContainer />
-        </div>
-        <div className="w-full lg:w-1/2">
-          <SubscriptionChartContainer />
-        </div>
+
+      <div className="mb-4">
+        <UserRetentionChartContainer />
       </div>
-      {/* <div className="mb-4">
-        <UserActivityHeatmap />
-      </div> */}
     </ContentLayout>
   );
 }
