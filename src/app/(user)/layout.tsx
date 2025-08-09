@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
+import QueryProvider from "@/components/shared/QueryProvider";
 
 export default function RootLayout({
   children,
@@ -9,7 +10,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
         {/* <h1>USER LAYOUT</h1> */}
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
