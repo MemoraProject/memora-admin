@@ -50,3 +50,42 @@ export const createLesson = async (
   const response = await api.post(`${BASE_URL}`, payload);
   return response.data;
 };
+
+export type UpdateLessonPayload = {
+  title: string;
+  description?: string | null;
+  type: LessonResourceType;
+  chapterId: number;
+  order: number;
+  resourceId?: number | null;
+  studySet?: {
+    keyword?: string;
+    name: string;
+    isPublic: boolean;
+    imgUrl?: string | null;
+    aiGeneratedId?: number | null;
+    folderId?: number | null;
+    userId?: string | null;
+    cards?: Array<{
+      id?: number;
+      word: string;
+      pronounce?: string | null;
+      ranking?: number | null;
+      sinoVietnamese?: string | null;
+      type?: string | null;
+      meaningDescription?: string | null;
+      example?: string | null;
+      exampleMeaning?: string | null;
+      meaning: string;
+      imgUrl?: string | null;
+      order?: number;
+    }>;
+  } | null;
+};
+
+export const updateLesson = async (
+  id: number | string,
+  payload: UpdateLessonPayload,
+): Promise<void> => {
+  await api.put(`${BASE_URL}/${id}`, payload);
+};

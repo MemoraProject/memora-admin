@@ -89,7 +89,17 @@ export default function LessonDetailPage({
       </div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{lesson.title}</h1>
-        <Badge variant="secondary">Order #{lesson.order}</Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">Order #{lesson.order}</Badge>
+          <Button
+            size="sm"
+            onClick={() =>
+              (window.location.href = `/admin/lesson/${lesson.id}/edit`)
+            }
+          >
+            Edit
+          </Button>
+        </div>
       </div>
 
       {lesson.type === LessonResourceType.Video && (
@@ -137,7 +147,7 @@ export default function LessonDetailPage({
                   </div>
                 </div>
                 <div className="">
-                  <div className="grid grid-cols-2 gap-4 p-4">
+                  <div className="grid grid-cols-3 gap-4 p-4">
                     {(studySet.cards || []).map((card) => (
                       <div key={card.id} className="rounded-xl border p-5">
                         <div className="flex items-start justify-between">
