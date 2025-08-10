@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import LessonForm from "../../components/LessonForm";
 import { getLessonById } from "@/api/lesson";
 import { getStudySetById } from "@/api/studyset";
+import { getDocumentById } from "@/api/document";
 import { LessonDetail, LessonResourceType } from "@/models/lesson";
 import { StudySet } from "@/models/studyset";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +14,7 @@ export default function EditLessonPage({ params }: { params: { id: string } }) {
   const [lesson, setLesson] = useState<LessonDetail | null>(null);
   const [studySet, setStudySet] = useState<StudySet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [documentHtml, setDocumentHtml] = useState<string>("");
 
   useEffect(() => {
     let mounted = true;
@@ -28,6 +30,17 @@ export default function EditLessonPage({ params }: { params: { id: string } }) {
             setStudySet(ss);
           } catch (err) {
             // Allow editing of lesson info even if study set fetch fails
+          }
+        } else if (
+          data.type === LessonResourceType.Document &&
+          data.resourceId
+        ) {
+          try {
+            const doc = await getDocumentById(data.resourceId);
+            if (!mounted) return;
+            setDocumentHtml(doc.content || "");
+          } catch (err) {
+            // ignore
           }
         }
       } catch (e) {
@@ -60,6 +73,11 @@ export default function EditLessonPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <LessonForm mode="edit" initialLesson={lesson} initialStudySet={studySet} />
+    <LessonForm
+      mode="edit"
+      initialLesson={lesson}
+      initialStudySet={studySet}
+      initialDocumentContent={documentHtml}
+    />
   );
 }

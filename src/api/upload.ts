@@ -69,3 +69,19 @@ export async function uploadFileDirect(
   });
   return res.data as unknown as string;
 }
+
+// Helper: upload multiple images and return public URLs
+export async function uploadMultiImages(
+  files: Array<File & { preview?: string }>,
+  pathPrefix: string,
+): Promise<string[]> {
+  const urls: string[] = [];
+  for (const file of files) {
+    const url = await uploadFileDirect(file, {
+      folderPath: pathPrefix,
+      filename: null,
+    });
+    urls.push(url);
+  }
+  return urls;
+}

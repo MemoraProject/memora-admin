@@ -42,6 +42,10 @@ export type CreateLessonPayload = {
       order?: number; // will be set by client as index+1
     }>;
   } | null;
+  document?: {
+    title: string;
+    content: string;
+  } | null;
 };
 
 export const createLesson = async (
@@ -81,6 +85,10 @@ export type UpdateLessonPayload = {
       order?: number;
     }>;
   } | null;
+  document?: {
+    title: string;
+    content: string;
+  } | null;
 };
 
 export const updateLesson = async (
@@ -88,4 +96,8 @@ export const updateLesson = async (
   payload: UpdateLessonPayload,
 ): Promise<void> => {
   await api.put(`${BASE_URL}/${id}`, payload);
+};
+
+export const deleteLesson = async (id: number | string): Promise<void> => {
+  await api.delete(`${BASE_URL}/${id}`);
 };

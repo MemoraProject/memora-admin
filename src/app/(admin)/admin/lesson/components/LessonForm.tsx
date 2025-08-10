@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import LessonDocumentEditor from "@/components/tiptap/LessonDocumentEditor";
 
 type LessonFormMode = "add" | "edit";
 
@@ -130,16 +131,26 @@ const cardSchema = z.object({
 });
 
 const schema = z.object({
-  title: z.string().min(1, "Tên bài học là bắt buộc"),
+  title: z.string().optional().default(""),
   description: z.string().optional().nullable(),
-  studySet: z.object({
-    name: z.string().min(1, "Bắt buộc"),
-    keyword: z.string().optional().nullable(),
-    isPublic: z.boolean().default(false),
-    imgFile: z.any().optional(),
-    imgUrl: z.string().nullable().optional(),
-    cards: z.array(cardSchema).default([]),
-  }),
+  studySet: z
+    .object({
+      name: z.string().min(1, "Bắt buộc"),
+      keyword: z.string().optional().nullable(),
+      isPublic: z.boolean().default(false),
+      imgFile: z.any().optional(),
+      imgUrl: z.string().nullable().optional(),
+      cards: z.array(cardSchema).default([]),
+    })
+    .optional()
+    .nullable(),
+  document: z
+    .object({
+      title: z.string().optional(),
+      content: z.string().default(""),
+    })
+    .optional()
+    .nullable(),
 });
 
 export type LessonFormValues = z.infer<typeof schema>;
@@ -149,6 +160,7 @@ type LessonFormProps = {
   chapterId?: number; // required in add mode
   initialLesson?: LessonDetail | null;
   initialStudySet?: StudySet | null;
+  initialDocumentContent?: string;
 };
 
 export default function LessonForm({
@@ -156,6 +168,7 @@ export default function LessonForm({
   chapterId,
   initialLesson,
   initialStudySet,
+  initialDocumentContent,
 }: LessonFormProps) {
   const router = useRouter();
   const [bulkOpen, setBulkOpen] = React.useState(false);
@@ -174,10 +187,19 @@ export default function LessonForm({
     maxBytes: 10 * 1024 * 1024,
   });
 
+  const [lessonType, setLessonType] = React.useState<LessonResourceType>(
+    mode === "edit" && initialLesson
+      ? initialLesson.type
+      : LessonResourceType.StudySet,
+  );
+
   const form = useForm<LessonFormValues>({
     resolver: zodResolver(schema),
     defaultValues:
-      mode === "edit" && initialLesson && initialStudySet
+      mode === "edit" &&
+      initialLesson &&
+      lessonType === LessonResourceType.StudySet &&
+      initialStudySet
         ? {
             title: initialLesson.title,
             description: initialLesson.description ?? "",
@@ -202,19 +224,39 @@ export default function LessonForm({
                 imgUrl: c.imgUrl ?? null,
               })),
             },
+            document: null,
           }
-        : {
-            title: "",
-            description: "",
-            studySet: {
-              name: "",
-              keyword: "",
-              isPublic: false,
-              imgFile: undefined,
-              imgUrl: null,
-              cards: [],
+        : mode === "edit" &&
+            initialLesson &&
+            lessonType === LessonResourceType.Document
+          ? {
+              title: initialLesson.title,
+              description: initialLesson.description ?? "",
+              studySet: null,
+              document: {
+                title: initialLesson.document?.title ?? initialLesson.title,
+                content: initialDocumentContent ?? "",
+              },
+            }
+          : {
+              title: "",
+              description: "",
+              studySet:
+                lessonType === LessonResourceType.StudySet
+                  ? {
+                      name: "",
+                      keyword: "",
+                      isPublic: false,
+                      imgFile: undefined,
+                      imgUrl: null,
+                      cards: [],
+                    }
+                  : null,
+              document:
+                lessonType === LessonResourceType.Document
+                  ? { title: "", content: "" }
+                  : null,
             },
-          },
   });
 
   const [chapterTitle, setChapterTitle] = React.useState<string>("");
@@ -227,15 +269,33 @@ export default function LessonForm({
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (values: LessonFormValues) => {
+      const safeTitle = (values.title ?? "").trim() || "Tài liệu mới";
       if (mode === "add") {
         if (!chapterId) throw new Error("Thiếu chapterId");
-        const studySetImgUrl = values.studySet.imgFile
+
+        if (lessonType === LessonResourceType.Document) {
+          return createLesson({
+            title: safeTitle,
+            description: values.description || null,
+            type: LessonResourceType.Document,
+            chapterId,
+            order: 1,
+            document: {
+              title: values.document?.title || safeTitle,
+              content: values.document?.content || "",
+            },
+            studySet: null,
+          });
+        }
+
+        // Study set path
+        const studySetImgUrl = values.studySet?.imgFile
           ? (await studysetUploader.upload(values.studySet.imgFile as File))
               .publicUrl
           : null;
 
         const cardsWithUrls = await Promise.all(
-          (values.studySet.cards || []).map(async (c, idx) => {
+          (values.studySet?.cards || []).map(async (c, idx) => {
             const file = (c as any).imgFile as File | undefined;
             const uploadedUrl = file
               ? (await cardUploader.upload(file)).publicUrl
@@ -250,30 +310,48 @@ export default function LessonForm({
         );
 
         return createLesson({
-          title: values.title,
+          title: safeTitle,
           description: values.description || null,
           type: LessonResourceType.StudySet,
           chapterId,
           order: 1,
           studySet: {
-            name: values.studySet.name,
-            keyword: values.studySet.keyword || undefined,
-            isPublic: values.studySet.isPublic,
+            name: values.studySet?.name || "",
+            keyword: values.studySet?.keyword || undefined,
+            isPublic: !!values.studySet?.isPublic,
             imgUrl: studySetImgUrl,
             cards: cardsWithUrls,
           },
+          document: null,
         });
       } else {
-        if (!initialLesson || !initialStudySet)
-          throw new Error("Thiếu dữ liệu ban đầu");
+        if (!initialLesson) throw new Error("Thiếu dữ liệu ban đầu");
         const lessonId = initialLesson.id;
-        const studySetImgUrl = values.studySet.imgFile
+
+        if (lessonType === LessonResourceType.Document) {
+          return updateLesson(lessonId, {
+            title: safeTitle,
+            description: values.description || null,
+            type: LessonResourceType.Document,
+            chapterId: initialLesson.chapterId,
+            order: initialLesson.order,
+            resourceId: initialLesson.resourceId,
+            document: {
+              title: values.document?.title || safeTitle,
+              content: values.document?.content || "",
+            },
+            studySet: null,
+          });
+        }
+
+        if (!initialStudySet) throw new Error("Thiếu dữ liệu ban đầu");
+        const studySetImgUrl = values.studySet?.imgFile
           ? (await studysetUploader.upload(values.studySet.imgFile as File))
               .publicUrl
-          : (values.studySet.imgUrl ?? null);
+          : (values.studySet?.imgUrl ?? null);
 
         const cardsWithUrls = await Promise.all(
-          (values.studySet.cards || []).map(async (c, idx) => {
+          (values.studySet?.cards || []).map(async (c, idx) => {
             const file = (c as any).imgFile as File | undefined;
             const uploadedUrl = file
               ? (await cardUploader.upload(file)).publicUrl
@@ -288,19 +366,20 @@ export default function LessonForm({
         );
 
         return updateLesson(lessonId, {
-          title: values.title,
+          title: safeTitle,
           description: values.description || null,
           type: LessonResourceType.StudySet,
           chapterId: initialLesson.chapterId,
           order: initialLesson.order,
           resourceId: initialLesson.resourceId,
           studySet: {
-            name: values.studySet.name,
-            keyword: values.studySet.keyword || undefined,
-            isPublic: values.studySet.isPublic,
+            name: values.studySet?.name || initialStudySet.name,
+            keyword: values.studySet?.keyword || undefined,
+            isPublic: !!values.studySet?.isPublic,
             imgUrl: studySetImgUrl,
             cards: cardsWithUrls,
           },
+          document: null,
         });
       }
     },
@@ -478,7 +557,10 @@ export default function LessonForm({
       if (mode === "add") {
         toast({
           title: "Thành công",
-          description: "Đã tạo bài học (Study set)",
+          description:
+            lessonType === LessonResourceType.Document
+              ? "Đã tạo bài học (Document)"
+              : "Đã tạo bài học (Study set)",
         });
         const id = res?.id;
         if (id) router.replace(`/admin/lesson/${id}`);
@@ -521,6 +603,70 @@ export default function LessonForm({
 
             <Card className="mb-6">
               <CardHeader>
+                <CardTitle>Loại bài học</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup
+                  className="flex gap-6"
+                  value={String(lessonType)}
+                  onValueChange={(v) => {
+                    const nextType = Number(v) as LessonResourceType;
+                    setLessonType(nextType);
+                    if (nextType === LessonResourceType.StudySet) {
+                      form.setValue("document", null as any, {
+                        shouldDirty: true,
+                      });
+                      if (!form.getValues("studySet")) {
+                        form.setValue(
+                          "studySet",
+                          {
+                            name: "",
+                            keyword: "",
+                            isPublic: false,
+                            imgFile: undefined,
+                            imgUrl: null,
+                            cards: [],
+                          } as any,
+                          { shouldDirty: true },
+                        );
+                      }
+                    } else if (nextType === LessonResourceType.Document) {
+                      form.setValue("studySet", null as any, {
+                        shouldDirty: true,
+                      });
+                      if (!form.getValues("document")) {
+                        form.setValue(
+                          "document",
+                          {
+                            title: form.getValues("title") || "",
+                            content: "",
+                          } as any,
+                          { shouldDirty: true },
+                        );
+                      }
+                    }
+                  }}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem
+                      value={String(LessonResourceType.StudySet)}
+                      id="type-studyset"
+                    />
+                    <Label htmlFor="type-studyset">Study set</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem
+                      value={String(LessonResourceType.Document)}
+                      id="type-document"
+                    />
+                    <Label htmlFor="type-document">Document</Label>
+                  </div>
+                </RadioGroup>
+              </CardContent>
+            </Card>
+
+            <Card className="mb-6">
+              <CardHeader>
                 <CardTitle>Thông tin bài học</CardTitle>
               </CardHeader>
               <CardContent>
@@ -555,162 +701,204 @@ export default function LessonForm({
               </CardContent>
             </Card>
 
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Study set</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-row gap-4">
+            {lessonType === LessonResourceType.StudySet && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>Study set</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-row gap-4">
+                    <FormField
+                      control={form.control}
+                      name="studySet.imgFile"
+                      render={({ field }) => (
+                        <FormItem className="w-1/2">
+                          <FormLabel>Ảnh</FormLabel>
+                          <FormControl>
+                            <FileDropInput
+                              value={field.value as File | undefined}
+                              onChange={(file) => field.onChange(file)}
+                              inputName={field.name}
+                              existingUrl={
+                                form.getValues("studySet.imgUrl") || undefined
+                              }
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex w-full flex-col gap-2">
+                      <FormField
+                        control={form.control}
+                        name="studySet.name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Tên</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Tên study set" {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="studySet.keyword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Từ khóa</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Từ khóa"
+                                {...field}
+                                value={field.value ?? ""}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="studySet.isPublic"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center">
+                            <FormLabel className="pt-2">Công khai</FormLabel>
+                            <FormControl>
+                              <Checkbox
+                                className="ml-2"
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {lessonType === LessonResourceType.Document && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>Tài liệu</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <FormField
                     control={form.control}
-                    name="studySet.imgFile"
+                    name="document.title"
                     render={({ field }) => (
-                      <FormItem className="w-1/2">
-                        <FormLabel>Ảnh</FormLabel>
+                      <FormItem>
+                        <FormLabel>Tiêu đề tài liệu</FormLabel>
                         <FormControl>
-                          <FileDropInput
-                            value={field.value as File | undefined}
-                            onChange={(file) => field.onChange(file)}
-                            inputName={field.name}
-                            existingUrl={
-                              form.getValues("studySet.imgUrl") || undefined
-                            }
+                          <Input
+                            placeholder="Nhập tiêu đề tài liệu"
+                            {...field}
                           />
                         </FormControl>
                       </FormItem>
                     )}
                   />
-                  <div className="flex w-full flex-col gap-2">
-                    <FormField
-                      control={form.control}
-                      name="studySet.name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tên</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Tên study set" {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="studySet.keyword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Từ khóa</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Từ khóa"
-                              {...field}
-                              value={field.value ?? ""}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
+                  <FormLabel>Nội dung</FormLabel>
+                  <LessonDocumentEditor
+                    value={form.getValues("document.content") || ""}
+                    onChange={(html) =>
+                      form.setValue("document.content" as any, html, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      })
+                    }
+                  />
+                </CardContent>
+              </Card>
+            )}
 
-                    <FormField
-                      control={form.control}
-                      name="studySet.isPublic"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center">
-                          <FormLabel className="pt-2">Công khai</FormLabel>
-                          <FormControl>
-                            <Checkbox
-                              className="ml-2"
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
+            {lessonType === LessonResourceType.StudySet && (
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between rounded-md border bg-white px-6 py-4">
+                  <div className="text-lg font-medium">Thẻ</div>
+                  <div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setBulkOpen(true)}
+                    >
+                      <Sparkles className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <div className="flex flex-col gap-2">
-              <div className="flex justify-between rounded-md border bg-white px-6 py-4">
-                <div className="text-lg font-medium">Thẻ</div>
-                <div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setBulkOpen(true)}
-                  >
-                    <Sparkles className="h-4 w-4" />
-                  </Button>
+                <div className="rounded-md">
+                  <CardsEditor form={form} />
                 </div>
-              </div>
-              <div className="rounded-md">
-                <CardsEditor form={form} />
-              </div>
 
-              <Dialog open={bulkOpen} onOpenChange={setBulkOpen}>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Tự động điền hàng loạt</DialogTitle>
-                    <DialogDescription>
-                      Nhập danh sách từ (phân tách bằng khoảng trắng) để thêm
-                      mới hoặc thay thế. Hoặc tự động điền cho toàn bộ thẻ hiện
-                      có.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="bulk-words">Danh sách từ</Label>
-                      <Textarea
-                        id="bulk-words"
-                        placeholder="Ví dụ: a b c d"
-                        value={bulkWordsInput}
-                        onChange={(e) => setBulkWordsInput(e.target.value)}
-                      />
+                <Dialog open={bulkOpen} onOpenChange={setBulkOpen}>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Tự động điền hàng loạt</DialogTitle>
+                      <DialogDescription>
+                        Nhập danh sách từ (phân tách bằng khoảng trắng) để thêm
+                        mới hoặc thay thế. Hoặc tự động điền cho toàn bộ thẻ
+                        hiện có.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="bulk-words">Danh sách từ</Label>
+                        <Textarea
+                          id="bulk-words"
+                          placeholder="Ví dụ: a b c d"
+                          value={bulkWordsInput}
+                          onChange={(e) => setBulkWordsInput(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Chế độ</Label>
+                        <RadioGroup
+                          className="flex gap-6"
+                          value={bulkMode}
+                          onValueChange={(v) => setBulkMode(v as any)}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="add" id="mode-add" />
+                            <Label htmlFor="mode-add">Thêm (Append)</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem
+                              value="override"
+                              id="mode-override"
+                            />
+                            <Label htmlFor="mode-override">
+                              Thay thế (Override)
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Chế độ</Label>
-                      <RadioGroup
-                        className="flex gap-6"
-                        value={bulkMode}
-                        onValueChange={(v) => setBulkMode(v as any)}
+                    <DialogFooter className="gap-2 sm:gap-2">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={bulkAutofillExisting}
+                        disabled={isBulkLoading}
                       >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="add" id="mode-add" />
-                          <Label htmlFor="mode-add">Thêm (Append)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="override" id="mode-override" />
-                          <Label htmlFor="mode-override">
-                            Thay thế (Override)
-                          </Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-                  </div>
-                  <DialogFooter className="gap-2 sm:gap-2">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={bulkAutofillExisting}
-                      disabled={isBulkLoading}
-                    >
-                      Tự động điền thẻ hiện có
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={bulkApplyAddOrOverride}
-                      disabled={isBulkLoading}
-                    >
-                      {bulkMode === "override"
-                        ? "Thay thế + tự động điền"
-                        : "Thêm + tự động điền"}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
+                        Tự động điền thẻ hiện có
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={bulkApplyAddOrOverride}
+                        disabled={isBulkLoading}
+                      >
+                        {bulkMode === "override"
+                          ? "Thay thế + tự động điền"
+                          : "Thêm + tự động điền"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
 
             <div className="flex justify-end gap-2">
               <Button

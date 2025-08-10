@@ -6,10 +6,22 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { LessonDetail, LessonResourceType } from "@/models/lesson";
-import { getLessonById } from "@/api/lesson";
+import { deleteLesson, getLessonById } from "@/api/lesson";
 import { getStudySetById } from "@/api/studyset";
 import { StudySet } from "@/models/studyset";
 import { toast } from "@/hooks/use-toast";
+import ViewBlogTipTap from "@/components/tiptap/ViewBlog";
+import { getDocumentById } from "@/api/document";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Book,
   FileText,
@@ -18,16 +30,22 @@ import {
   Timer,
   Volume2,
   ArrowLeft,
+  Trash2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function LessonDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
+  const router = useRouter();
   const [lesson, setLesson] = useState<LessonDetail | null>(null);
   const [studySet, setStudySet] = useState<StudySet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [documentContent, setDocumentContent] = useState<string | null>(null);
+  const [documentTitle, setDocumentTitle] = useState<string | null>(null);
+  const [openDelete, setOpenDelete] = useState(false);
 
   const fetchLesson = async () => {
     setIsLoading(true);
@@ -41,6 +59,16 @@ export default function LessonDetailPage({
           setStudySet(ss);
         } catch (err) {
           console.error("Failed to fetch study set:", err);
+        }
+      } else if (data.type === LessonResourceType.Document && data.resourceId) {
+        try {
+          const doc = await getDocumentById(data.resourceId);
+          setDocumentContent(
+            doc.content ?? "Tài liệu này hiện chưa có nội dung",
+          );
+          setDocumentTitle(doc.title ?? "Tiêu đề tài liệu");
+        } catch (err) {
+          console.error("Failed to fetch document:", err);
         }
       }
     } catch (error) {
@@ -98,6 +126,13 @@ export default function LessonDetailPage({
             }
           >
             Edit
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => setOpenDelete(true)}
+          >
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -232,18 +267,58 @@ export default function LessonDetailPage({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" /> Document
+              <FileText className="h-5 w-5" /> {documentTitle}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="prose max-w-none">
-              <div className="text-sm text-muted-foreground">
-                Document details not implemented yet.
+            {documentContent ? (
+              <div className="prose max-w-none">
+                <ViewBlogTipTap content={documentContent} />
               </div>
-            </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                No document content.
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
+
+      <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xóa bài học?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này không thể hoàn tác. Bài học sẽ bị xóa vĩnh viễn.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                try {
+                  await deleteLesson(lesson.id);
+                  toast({
+                    title: "Đã xóa",
+                    description: "Bài học đã được xóa",
+                  });
+                  router.back();
+                } catch (err: any) {
+                  toast({
+                    title: "Lỗi",
+                    description: err?.message || "Không thể xóa bài học",
+                    variant: "destructive",
+                  });
+                } finally {
+                  setOpenDelete(false);
+                }
+              }}
+            >
+              Xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
