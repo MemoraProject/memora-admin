@@ -8,6 +8,7 @@ import {
   LucideIcon,
   CreditCard,
   Banknote,
+  BookOpenText,
 } from "lucide-react";
 
 type Submenu = {
@@ -39,6 +40,16 @@ export function getMenuList(pathname: string): Group[] {
           label: "Dashboard",
           icon: LayoutGrid,
           submenus: [],
+        },
+      ],
+    },
+    {
+      groupLabel: "Course",
+      menus: [
+        {
+          href: "/admin/course",
+          label: "Course",
+          icon: BookOpenText,
         },
       ],
     },

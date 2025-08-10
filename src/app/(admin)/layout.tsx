@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import "@/styles/globals.css";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { GeistSans } from "geist/font/sans";
+import QueryProvider from "@/components/shared/QueryProvider";
 
 export default function RootLayout({
   children,
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <AdminPanelLayout>{children}</AdminPanelLayout>
+        <QueryProvider>
+          <AdminPanelLayout>{children}</AdminPanelLayout>
+        </QueryProvider>
       </body>
     </html>
   );

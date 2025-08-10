@@ -1,0 +1,240 @@
+/* Basic editor styles */
+.tiptap {
+  outline: none;
+  width: 100%;
+}
+.tiptap > * + * {
+  margin-top: 0.75em;
+}
+.tiptap ul,
+.tiptap ol {
+  padding: 0 1rem;
+}
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  line-height: 1.1;
+}
+.tiptap h1 {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.tiptap h2 {
+  font-size: 29px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.tiptap h3 {
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.tiptap h4 {
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.tiptap h5 {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.tiptap h6 {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.tiptap p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.025em;
+}
+
+.tiptap ul {
+  padding: 0 1rem;
+  list-style-type: disc;
+}
+.tiptap ol {
+  padding: 0 2rem;
+  list-style-type: decimal;
+}
+
+.tiptap code {
+  background-color: rgba(97, 97, 97, 0.1);
+  color: #616161;
+}
+.tiptap pre {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: "Be Vietnam Pro", monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+.tiptap pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+.tiptap img {
+  width: 100%;
+  border-radius: 8px;
+}
+.tiptap blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(13, 13, 13, 0.1);
+}
+.tiptap hr {
+  border: none;
+  border-top: 2px solid rgba(13, 13, 13, 0.1);
+  margin: 1rem 0;
+}
+.table-of-content {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  z-index: 2;
+  width: 30rem;
+  max-height: 50vh;
+  overflow: auto;
+  border: 1px solid #ddd;
+}
+@media (max-width: 768px) {
+  .table-of-content {
+    width: 100%;
+  }
+}
+.toc--empty_state {
+  color: #777;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.toc--list {
+  gap: 0.5rem;
+}
+.toc--list,
+.toc--item--children {
+  display: flex;
+  flex-direction: column;
+}
+.toc--list a {
+  color: #000;
+  text-decoration: none;
+}
+.toc--item {
+  padding-left: calc(1rem * (var(--level) - 1));
+}
+.ProseMirror {
+  padding: 0px;
+}
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+/* Table Styles */
+.tiptap table {
+  border-collapse: collapse;
+  margin-bottom: 1.5em;
+  overflow-x: auto;
+  width: 100%;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .tiptap table {
+    display: table;
+  }
+}
+
+.tiptap table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  text-align: left;
+}
+
+.tiptap table th,
+.tiptap table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem;
+  min-width: 100px;
+}
+
+.tiptap table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Selected table cell */
+.tiptap table .selectedCell {
+  background-color: rgba(59, 130, 246, 0.1);
+  position: relative;
+}
+
+/* Table toolbar */
+.tableToolbar {
+  position: absolute;
+  display: flex;
+  gap: 0.5rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Link styles */
+.tiptap a {
+  color: #3b82f6;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.tiptap a:hover {
+  color: #2563eb;
+}
+
+/* YouTube embed styles */
+.tiptap .youtube-embed {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  margin: 1rem 0;
+}
+
+.tiptap .youtube-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 8px;
+}
+
+/* Also ensure proper styling for YouTube elements created by the extension */
+.tiptap div[data-youtube-video] {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.tiptap div[data-youtube-video] iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 8px;
+}
